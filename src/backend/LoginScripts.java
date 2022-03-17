@@ -10,35 +10,31 @@ import javax.swing.JOptionPane;
 public class LoginScripts {
     UsuarioQuerys querys = new UsuarioQuerys();
     List<Usuario> users = querys.seleccionar();
-    private boolean isLogin;
-    private boolean invalidPassword = false;
+    private int returnValue;
+    private boolean validateLogin;
     private boolean isEmailCorrect = false;
     private String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",};
     Random random = new Random();
     
-    public void validateUser(String nickname, String password){
-    	isLogin = false;
-    	
+    public int validateUser(String nickname, String password){
+    	validateLogin = false;
         users.forEach(user -> {
             if (user.getNickname().equals(nickname) && user.getPassword().equals(password)){
                 JOptionPane.showMessageDialog(null, "El usuario ha ingresado con exito\n"
                         + "\nNombre Completo: " + user.getNombres() + " " + user.getApellidos()
                         + "\nEmail: " + user.getEmail(), 
                         "Bienvenido " + user.getNickname(), -1);
-                isLogin = true;
+                returnValue = 0;
+                validateLogin = true;
             } else if (user.getNickname().equals(nickname)){
-                invalidPassword = true;
+                returnValue = 1;
+                validateLogin = true;
             }
         });
-        if (!isLogin){
-            if(invalidPassword){
-                JOptionPane.showMessageDialog(null, "Contraseña incorrecta."
-                        + "\nIntente nuevamente por favor.", "Error al iniciar sesion", 0);
-            } else {
-                JOptionPane.showMessageDialog(null, "Usuario inexistente."
-                        + "\nIntente nuevamente por favor.", "Error al iniciar sesion", 0);
-            }
+        if (!validateLogin) {
+        	returnValue = -1;
         }
+        return returnValue;
     }
     
     public boolean validateEmail(String email) {

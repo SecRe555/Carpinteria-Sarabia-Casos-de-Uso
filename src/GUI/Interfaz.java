@@ -1,7 +1,11 @@
 package GUI;
 
 import backend.LoginScripts;
+
+import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -40,17 +44,13 @@ public class Interfaz extends JFrame{
     private boolean validEmail;
     //private int tabCount;
     private String currentCodeKey;
-    private String codeKey;
+    private String codeKey = "";
     
-    public Interfaz(){        
-//        setDefaultLookAndFeelDecorated(true);
-//        try {
-//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-//            ex.printStackTrace(System.out);
-//        }
+    public Interfaz(){
         initWindow();
-        initComponents();
+        createContainer();
+        createActionButtons();
+        createJTabbedPane();
     }
     
     private void initWindow(){
@@ -62,12 +62,6 @@ public class Interfaz extends JFrame{
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         //fullscreen = true;
         setUndecorated(true);
-    }
-
-    private void initComponents() {
-        createContainer();
-        createActionButtons();
-        createJTabbedPane();
     }
     
     private void createContainer(){
@@ -84,12 +78,12 @@ public class Interfaz extends JFrame{
         tabbedPane.setBackground(Color.black);
         tabbedPane.setForeground(Color.white);
         createCarpentryTab();
-        //createEmailTab();
+        //createEmailTab(); --Esto sirve
         tabbedPane.addTab("Carpinteria Sarabia",
                 new ImageIcon(getClass().getResource("/files/carpentry-icon.jpg")),
                 carpentryTab, "www.carpinteria-sarabia.com/login");
         //tabbedPane.addTab("Email", new ImageIcon(getClass().getResource("/files/mail-icon.jpg")), 
-                //emailTab, "www.email.com");
+                //emailTab, "www.email.com"); --Esto sirve
         container.add(tabbedPane);
     }
     
@@ -110,39 +104,22 @@ public class Interfaz extends JFrame{
         panelTitleLogin.setLayout(null);
         carpentryTab.add(panelTitleLogin);
         
-        JLabel titleLabel1 = new JLabel("Inicio de sesi\u00F3n");
-        titleLabel1.setOpaque(true);
-        titleLabel1.setBounds(100, 40, 316, 40);
-        titleLabel1.setBackground(null);
-        titleLabel1.setForeground(new Color (255,255,255));
-        titleLabel1.setFont(titleLabel1.getFont().deriveFont((float)40));
-        panelTitleLogin.add(titleLabel1);
+        JLabel titleLabel = new JLabel("<html>Inicio de sesión<br>de empleados.</html>");
+        titleLabel.setOpaque(true);
+        titleLabel.setBounds(80, 40, 316, 85);
+        titleLabel.setBackground(null);
+        titleLabel.setForeground(new Color (255,255,255));
+        titleLabel.setFont(titleLabel.getFont().deriveFont((float)40));
+        panelTitleLogin.add(titleLabel);
         
-        JLabel titleLabel2 = new JLabel("de empleados.");
-        titleLabel2.setOpaque(true);
-        titleLabel2.setBounds(100, 85, 316, 40);
-        titleLabel2.setBackground(null);
-        titleLabel2.setForeground(new Color (255,255,255));
-        titleLabel2.setFont(titleLabel2.getFont().deriveFont((float)40));
-        panelTitleLogin.add(titleLabel2);
-        
-        JLabel aviso1 = new JLabel();
-        aviso1.setOpaque(true);
-        aviso1.setBounds(100, 160, 350, 15);
-        aviso1.setText("* Este servicio esta reservado exclusivamente a");
-        aviso1.setBackground(null);
-        aviso1.setForeground(new Color (255,255,255));
-        aviso1.setFont(aviso1.getFont().deriveFont((float)15));
-        panelTitleLogin.add(aviso1);
-        
-        JLabel aviso2 = new JLabel();
-        aviso2.setOpaque(true);
-        aviso2.setBounds(100, 175, 350, 15);
-        aviso2.setText("aquellos empleados registrados.");
-        aviso2.setBackground(null);
-        aviso2.setForeground(new Color (255,255,255));
-        aviso2.setFont(aviso2.getFont().deriveFont((float)15));
-        panelTitleLogin.add(aviso2);
+        JLabel aviso = new JLabel();
+        aviso.setOpaque(true);
+        aviso.setBounds(80, 150, 350, 40);
+        aviso.setText("<html>* Este servicio esta reservado exclusivamente a<br>aquellos empleados registrados</html>");
+        aviso.setBackground(null);
+        aviso.setForeground(new Color (255,255,255));
+        aviso.setFont(aviso.getFont().deriveFont((float)15));
+        panelTitleLogin.add(aviso);
         
         JLabel userLabel = new JLabel("Usuario:");
         userLabel.setOpaque(true);
@@ -159,24 +136,6 @@ public class Interfaz extends JFrame{
         userTextField.setForeground(new Color(100, 100, 100, 200));
         userTextField.setFont(userLabel.getFont().deriveFont((float)24));
         carpentryTab.add(userTextField);
-        userTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e){
-                if (removeUserExampleText){
-                    userTextField.setText("");
-                    userTextField.setForeground(Color.black);
-                    removeUserExampleText = false;
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (userTextField.getText().equals("")){
-                    userTextField.setText("example");
-                    userTextField.setForeground(new Color(100, 100, 100, 200));
-                    removeUserExampleText = true;
-                }
-            }
-        });
         
         JLabel passwordLabel = new JLabel("Contrase\u00F1a:");
         passwordLabel.setOpaque(true);
@@ -195,37 +154,13 @@ public class Interfaz extends JFrame{
         passwordField.setEditable(true);
         carpentryTab.add(passwordField);
         
-        char passwordChar = passwordField.getEchoChar();
         JToggleButton viewPassword = new JToggleButton();
-        viewPassword.setOpaque(true);
-        viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/closed eye.png")));
         viewPassword.setBounds(1200, 440, 50, 49);
+        viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/closed eye.png")));
         viewPassword.setBackground(Color.white);
         viewPassword.setForeground(new Color(100, 100, 100));
         viewPassword.setFont(viewPassword.getFont().deriveFont((float)15));
         viewPassword.setFocusPainted(false);
-        viewPassword.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (viewPassword.isSelected()){
-                	viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/open eye.png")));
-                    if (removePasswordExampleText){
-                        passwordField.setText("");
-                        removePasswordExampleText = false;
-                    }
-                    passwordField.setEchoChar((char) 0);
-                    passwordField.setForeground(Color.black);
-                } else {
-                	viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/closed eye.png")));
-                    passwordField.setEchoChar(passwordChar);
-                    if (passwordField.getText().equals("")){
-                        passwordField.setText("example");
-                        removePasswordExampleText = true;
-                        passwordField.setForeground(new Color(100, 100, 100));
-                    }
-                }
-            }
-        });
         carpentryTab.add(viewPassword);
         
         JButton loginButton = new JButton();
@@ -236,29 +171,6 @@ public class Interfaz extends JFrame{
         loginButton.setFont(loginButton.getFont().deriveFont((float)24));
         loginButton.setFocusPainted(false);
         carpentryTab.add(loginButton);
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String user = userTextField.getText();
-                char[] passwordArray = passwordField.getPassword();
-                String password = "";
-                for (int i = 0; i < passwordArray.length; i++){
-                    password += passwordArray[i];
-                }
-                script.validateUser(user, password);
-            }
-        });
-        loginButton.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                loginButton.setBackground(new Color(194,102,10,200));
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                loginButton.setBackground(new Color(194,102,10));
-            }
-        });
         
         JButton passMissedButton = new JButton();
         passMissedButton.setBounds(985, 605, 225, 20);
@@ -267,36 +179,43 @@ public class Interfaz extends JFrame{
         passMissedButton.setForeground(new Color(194,102,10));
         passMissedButton.setFont(passMissedButton.getFont().deriveFont((float)15));
         passMissedButton.setBorderPainted(false);
+        passMissedButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         carpentryTab.add(passMissedButton);
-        passMissedButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                missPassword = createMissPasswordPanel();
-                tabbedPane.addTab("Contrase\u00F1a olvidada",
-                    new ImageIcon(getClass().getResource("/files/carpentry-icon.jpg")),
-                    missPassword, "www.carpinteria-sarabia.com/password_reset");
-                validEmail = false;
-            }
-        });
         
         JLabel underLineMissed = new JLabel(" ");
         underLineMissed.setOpaque(true);
         underLineMissed.setBounds(1000, 625, 200, 3);
-        underLineMissed.setBackground(new Color(194, 102, 10));
+        underLineMissed.setBackground(new Color(50, 50, 255));
+        underLineMissed.setVisible(false);
         carpentryTab.add(underLineMissed);
         
-        passMissedButton.addMouseListener(new MouseAdapter() {
+        JLabel message = new JLabel();
+        message.setBounds(950, 250, 290, 40);
+        message.setOpaque(true);
+        message.setVisible(false);
+        message.setForeground(Color.white);
+        message.setFont(message.getFont().deriveFont((float) 14));
+        message.setHorizontalAlignment(JLabel.CENTER);
+        carpentryTab.add(message);
+        
+        userTextField.addFocusListener(new FocusListener() {
             @Override
-            public void mouseEntered(MouseEvent evt){
-                passMissedButton.setForeground(new Color(50, 50, 255));
-                underLineMissed.setBackground(new Color(50, 50, 255));
+            public void focusGained(FocusEvent e){
+                if (removeUserExampleText){
+                    userTextField.setText("");
+                    userTextField.setForeground(Color.black);
+                    removeUserExampleText = false;
+                }
             }
-            public void mouseExited(MouseEvent evt){
-                passMissedButton.setForeground(new Color(194,102,10));
-                underLineMissed.setBackground(new Color(194, 102, 10));
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (userTextField.getText().equals("")){
+                    userTextField.setText("example");
+                    userTextField.setForeground(new Color(100, 100, 100, 200));
+                    removeUserExampleText = true;
+                }
             }
         });
-        
         userTextField.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent evt) {
                 char charTyped = evt.getKeyChar();
@@ -305,6 +224,7 @@ public class Interfaz extends JFrame{
                 }
             }
         });
+        
         passwordField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -330,7 +250,101 @@ public class Interfaz extends JFrame{
                 if (charTyped == '\n'){
                     loginButton.doClick();
                 }
-                
+            }
+        });
+        
+        char passwordChar = passwordField.getEchoChar();
+        viewPassword.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (viewPassword.isSelected()){
+                	viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/open eye.png")));
+                    if (removePasswordExampleText){
+                        passwordField.setText("");
+                        removePasswordExampleText = false;
+                    }
+                    passwordField.setEchoChar((char) 0);
+                    passwordField.setForeground(Color.black);
+                } else {
+                	viewPassword.setIcon(new ImageIcon(getClass().getResource("/files/closed eye.png")));
+                    passwordField.setEchoChar(passwordChar);
+                    if (passwordField.getText().equals("")){
+                        passwordField.setText("example");
+                        removePasswordExampleText = true;
+                        passwordField.setForeground(new Color(100, 100, 100));
+                    }
+                }
+            }
+        });
+        
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	userLabel.setLocation(950, 310);
+        		userTextField.setLocation(950, 370);
+        		passwordLabel.setLocation(950, 440);
+        		passwordField.setLocation(950, 500);
+        		viewPassword.setLocation(1200, 500);
+        		loginButton.setLocation(950, 610);
+        		passMissedButton.setLocation(985, 665);
+        		underLineMissed.setLocation(1000, 685);
+        		carpentryTab.revalidate();
+        		carpentryTab.repaint();
+            	if (removeUserExampleText || removePasswordExampleText) {
+            		message.setBackground(new Color(255, 80, 80));
+                    message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+            		message.setText("Rellene todos los campos.");
+            		message.setVisible(true);
+            	} else {
+            		String user = userTextField.getText();
+                    char[] passwordArray = passwordField.getPassword();
+                    String password = "";
+                    for (int i = 0; i < passwordArray.length; i++){
+                        password += passwordArray[i];
+                    }
+                    int isLogin;
+                    isLogin = script.validateUser(user, password);
+                    switch (isLogin) {
+                    	case 0: 
+                    		message.setText("Login exitoso.");
+                    		message.setBackground(new Color(0, 255, 50));
+                    		message.setBorder(BorderFactory.createLineBorder(Color.green, 1));
+                    		break;
+                    	case 1:
+                    		message.setBackground(new Color(255, 80, 80));
+                            message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+                    		message.setText("Contraseña incorrecta.");
+                    		break;
+                    	case -1:
+                    		message.setBackground(new Color(255, 80, 80));
+                            message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+                    		message.setText("Usuario inexistente");
+                    		break;
+                    }
+                    message.setVisible(true);
+            	}
+            }
+        });
+        
+        passMissedButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt){
+                passMissedButton.setForeground(new Color(50, 50, 255));
+                underLineMissed.setVisible(true);
+            }
+            public void mouseExited(MouseEvent evt){
+                passMissedButton.setForeground(new Color(194,102,10));
+                underLineMissed.setVisible(false);
+            }
+        });
+        passMissedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                missPassword = createMissPasswordPanel();
+                tabbedPane.addTab("Contrase\u00F1a olvidada",
+                    new ImageIcon(getClass().getResource("/files/carpentry-icon.jpg")),
+                    missPassword, "www.carpinteria-sarabia.com/password_reset");
+                validEmail = false;
             }
         });
     }
@@ -383,10 +397,11 @@ public class Interfaz extends JFrame{
                 removeEmailExampleText = false;
 			}
 		});
+		
 		emailTextField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e){
-                if (removeUserExampleText){
+                if (removeEmailExampleText){
                     emailTextField.setText("");
                     emailTextField.setForeground(Color.black);
                     removeEmailExampleText = false;
@@ -672,7 +687,7 @@ public class Interfaz extends JFrame{
 					message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
 					message.setHorizontalAlignment(JTextField.CENTER);
 				} else {
-					String codeKey = "";
+					codeKey = "";
 					codeKey += field1.getText() +  field2.getText() + 
 							field3.getText() + field4.getText() + field5.getText();
 					if (codeKey.equals(currentCodeKey)) {
@@ -841,13 +856,13 @@ public class Interfaz extends JFrame{
     	return panel;
     }
     
-    private void createEmailTab(){
+    /*private void createEmailTab(){
         emailTab = new JPanel();
         emailTab.setBackground(Color.white);
         emailTab.setLayout(null);
         
         //JLabel emailLogo = new JLabel();
-    }
+    }*/
     
     private void createActionButtons() {
         JButton minimizeButton = new JButton();
@@ -886,6 +901,13 @@ public class Interfaz extends JFrame{
         maximizeButton.setFocusPainted(false);
         maximizeButton.setBorderPainted(false);
         maximizeButton.setEnabled(false);
+        try {
+			maximizeButton.setCursor(Cursor.getSystemCustomCursor("Invalid.32x32"));
+		} catch (HeadlessException e) {
+			e.printStackTrace();
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
 //        maximizeButton.addActionListener(new ActionListener(){
 //            @Override
 //            public void actionPerformed(ActionEvent evt){
@@ -934,11 +956,6 @@ public class Interfaz extends JFrame{
             }
         });
         container.add(exitButton);        
-    }
-    
-    public static void main(String[] args) {
-        Interfaz interfaz = new Interfaz();
-        interfaz.setVisible(true);
     }
 
 }
