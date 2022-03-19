@@ -35,7 +35,7 @@ public class Interfaz extends JFrame {
 	JPanel emailTab;
 	JPanel missPassword;
 	// private boolean fullscreen;
-	private JPanel mainPanel;
+	private JPanel missPasswordTab;
 	private boolean removeUserExampleText = true;
 	private boolean removePasswordExampleText = true;
 	private boolean removeEmailExampleText = true;
@@ -339,7 +339,7 @@ public class Interfaz extends JFrame {
 		passMissedButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				missPassword = createMissPasswordPanel();
+				missPassword = createMissPasswordTab();
 				tabbedPane.addTab("Contrase\u00F1a olvidada",
 						new ImageIcon(getClass().getResource("/files/carpentry-icon.jpg")), missPassword,
 						"www.carpinteria-sarabia.com/password_reset");
@@ -348,35 +348,42 @@ public class Interfaz extends JFrame {
 		});
 	}
 
-	private JPanel createMissPasswordPanel() {
-		mainPanel = new JPanel();
-		mainPanel.setBackground(Color.white);
-		mainPanel.setLayout(null);
+	private JPanel createMissPasswordTab() {
+		missPasswordTab = new JPanel();
+		missPasswordTab.setBackground(Color.white);
+		missPasswordTab.setLayout(null);
 
 		JLabel carpentryLogo = new JLabel();
 		carpentryLogo.setBounds(658, 50, 50, 50);
 		carpentryLogo.setIcon(new ImageIcon(getClass().getResource("/files/carpentry-icon1.jpg")));
-		mainPanel.add(carpentryLogo);
+		missPasswordTab.add(carpentryLogo);
 
 		JLabel passwordMissedTitle = new JLabel("Cambiar contraseña");
 		passwordMissedTitle.setBounds(583, 125, 200, 50);
 		passwordMissedTitle.setBackground(Color.white);
 		passwordMissedTitle.setForeground(Color.black);
 		passwordMissedTitle.setFont(passwordMissedTitle.getFont().deriveFont((float) 20));
-		mainPanel.add(passwordMissedTitle);
-
-		JPanel secondaryPanel = new JPanel();
-		secondaryPanel.setBounds(509, 200, 350, 450);
-		secondaryPanel.setLayout(null);
-		secondaryPanel.setBackground(new Color(225, 225, 225));
-		mainPanel.add(secondaryPanel);
+		missPasswordTab.add(passwordMissedTitle);
+		
+		JPanel sendEmailPanel = createSendEmailPanel();
+		missPasswordTab.add(sendEmailPanel);
+		
+		return missPasswordTab;
+	}
+	
+	private JPanel createSendEmailPanel() {		
+		JPanel panel = new JPanel();
+		panel.setBounds(509, 200, 350, 450);
+		panel.setLayout(null);
+		panel.setBackground(new Color(225, 225, 225));
+		missPasswordTab.add(panel);
 
 		JLabel setEmail = new JLabel("<html>Introduzca su direccion de correo<br>electronico</html>");
 		setEmail.setBounds(30, 40, 290, 30);
 		setEmail.setBackground(new Color(255, 255, 255, 0));
 		setEmail.setForeground(Color.black);
 		setEmail.setFont(setEmail.getFont().deriveFont((float) 14));
-		secondaryPanel.add(setEmail);
+		panel.add(setEmail);
 
 		JTextField emailTextField = new JTextField("example@mail.com");
 		emailTextField.setBounds(30, 110, 290, 40);
@@ -384,7 +391,7 @@ public class Interfaz extends JFrame {
 		emailTextField.setForeground(new Color(100, 100, 100, 200));
 		emailTextField.setFont(emailTextField.getFont().deriveFont((float) 16));
 		emailTextField.setFocusable(false);
-		secondaryPanel.add(emailTextField);
+		panel.add(emailTextField);
 
 		JButton sendEmail = new JButton("Enviar email de confirmacion");
 		sendEmail.setBounds(30, 175, 290, 40);
@@ -392,7 +399,7 @@ public class Interfaz extends JFrame {
 		sendEmail.setForeground(Color.white);
 		sendEmail.setFont(sendEmail.getFont().deriveFont((float) 14));
 		sendEmail.setFocusPainted(false);
-		secondaryPanel.add(sendEmail);
+		panel.add(sendEmail);
 
 		emailTextField.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent evt) {
@@ -443,11 +450,11 @@ public class Interfaz extends JFrame {
 				if (validEmail) {
 					validEmail = false;
 					currentEmail = emailTextField.getText();
-					mainPanel.remove(secondaryPanel);
-					mainPanel.revalidate();
-					mainPanel.repaint();
+					missPasswordTab.remove(panel);
+					missPasswordTab.revalidate();
+					missPasswordTab.repaint();
 					JPanel restorePassword = createEnterKeyCodePanel();
-					mainPanel.add(restorePassword);
+					missPasswordTab.add(restorePassword);
 					currentCodeKey = script.generateCodeKey();
 					JOptionPane.showMessageDialog(null, currentCodeKey);
 				} else {
@@ -458,15 +465,15 @@ public class Interfaz extends JFrame {
 					incorrectEmail.setForeground(Color.white);
 					incorrectEmail.setFont(incorrectEmail.getFont().deriveFont((float) 14));
 					incorrectEmail.setBorder(BorderFactory.createLineBorder(Color.red, 1));
-					secondaryPanel.add(incorrectEmail);
+					panel.add(incorrectEmail);
 
-					secondaryPanel.revalidate();
-					secondaryPanel.repaint();
+					panel.revalidate();
+					panel.repaint();
 				}
 			}
 		});
 		
-		return mainPanel;
+		return panel;
 	}
 
 	private JPanel createEnterKeyCodePanel() {
@@ -681,11 +688,11 @@ public class Interfaz extends JFrame {
 					codeKey += field1.getText() + field2.getText() + field3.getText() + field4.getText()
 							+ field5.getText();
 					if (codeKey.equals(currentCodeKey)) {
-						mainPanel.remove(panel);
-						mainPanel.revalidate();
-						mainPanel.repaint();
+						missPasswordTab.remove(panel);
+						missPasswordTab.revalidate();
+						missPasswordTab.repaint();
 						JPanel changePassword = createChangePassword();
-						mainPanel.add(changePassword);
+						missPasswordTab.add(changePassword);
 					} else {
 						message.setText("<html>Codigo de confirmacion incorrecto.</html>");
 						message.setBackground(new Color(255, 80, 80));
@@ -783,11 +790,11 @@ public class Interfaz extends JFrame {
 			public void actionPerformed(ActionEvent evt) {
 				if ((newPassword.getText().equals(confirmPassword.getText()) && !newPassword.getText().equals(""))) {
 					script.updatePassword(currentEmail, newPassword.getText());
-					mainPanel.remove(panel);
-					mainPanel.revalidate();
-					mainPanel.repaint();
+					missPasswordTab.remove(panel);
+					missPasswordTab.revalidate();
+					missPasswordTab.repaint();
 					JPanel passwordChangedPanel = createPasswordChangedPanel();
-					mainPanel.add(passwordChangedPanel);
+					missPasswordTab.add(passwordChangedPanel);
 				} else {
 					textSetPassword.setLocation(30, 100);
 					newPassword.setLocation(30, 160);
