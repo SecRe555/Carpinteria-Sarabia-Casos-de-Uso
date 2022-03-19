@@ -26,6 +26,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 
 public class Interfaz extends JFrame {
 	LoginScripts script = new LoginScripts();
@@ -44,6 +45,12 @@ public class Interfaz extends JFrame {
 	// private int tabCount;
 	private String currentCodeKey;
 	private String codeKey = "";
+	private Color brownCarpentryColor = new Color(194, 102, 10);
+	private Color redErrorColor = new Color(255, 80, 80);
+	private Border redBorder = BorderFactory.createLineBorder(Color.red, 2);  
+	private Color greenConfirmColor = new Color(80, 255, 80);
+	private Color greenButtonColor = new Color(0, 170, 50);
+	private Border greenBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 2);
 
 	public Interfaz() {
 		initWindow();
@@ -98,7 +105,7 @@ public class Interfaz extends JFrame {
 
 		JPanel panelTitleLogin = new JPanel();
 		panelTitleLogin.setBounds(850, 0, 516, 200);
-		panelTitleLogin.setBackground(new Color(194, 102, 10));
+		panelTitleLogin.setBackground(brownCarpentryColor);
 		panelTitleLogin.setLayout(null);
 		carpentryTab.add(panelTitleLogin);
 
@@ -163,7 +170,7 @@ public class Interfaz extends JFrame {
 		JButton loginButton = new JButton();
 		loginButton.setBounds(950, 550, 300, 50);
 		loginButton.setText("Iniciar Sesi\u00F3n");
-		loginButton.setBackground(new Color(194, 102, 10));
+		loginButton.setBackground(brownCarpentryColor);
 		loginButton.setForeground(Color.white);
 		loginButton.setFont(loginButton.getFont().deriveFont((float) 24));
 		loginButton.setFocusPainted(false);
@@ -173,7 +180,7 @@ public class Interfaz extends JFrame {
 		passMissedButton.setBounds(985, 605, 225, 20);
 		passMissedButton.setText("¿Olvidaste tu contrase\u00F1a?");
 		passMissedButton.setBackground(null);
-		passMissedButton.setForeground(new Color(194, 102, 10));
+		passMissedButton.setForeground(brownCarpentryColor);
 		passMissedButton.setFont(passMissedButton.getFont().deriveFont((float) 15));
 		passMissedButton.setBorderPainted(false);
 		passMissedButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -289,8 +296,8 @@ public class Interfaz extends JFrame {
 				carpentryTab.revalidate();
 				carpentryTab.repaint();
 				if (removeUserExampleText || removePasswordExampleText) {
-					message.setBackground(new Color(255, 80, 80));
-					message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+					message.setBackground(redErrorColor);
+					message.setBorder(redBorder);
 					message.setText("Rellene todos los campos.");
 					message.setVisible(true);
 				} else {
@@ -305,17 +312,17 @@ public class Interfaz extends JFrame {
 					switch (isLogin) {
 					case 0:
 						message.setText("Login exitoso.");
-						message.setBackground(new Color(0, 255, 50));
-						message.setBorder(BorderFactory.createLineBorder(Color.green, 1));
+						message.setBackground(greenConfirmColor);
+						message.setBorder(greenBorder);
 						break;
 					case 1:
-						message.setBackground(new Color(255, 80, 80));
-						message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+						message.setBackground(redErrorColor);
+						message.setBorder(redBorder);
 						message.setText("Contraseña incorrecta.");
 						break;
 					case -1:
-						message.setBackground(new Color(255, 80, 80));
-						message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+						message.setBackground(redErrorColor);
+						message.setBorder(redBorder);
 						message.setText("Usuario inexistente");
 						break;
 					}
@@ -332,7 +339,7 @@ public class Interfaz extends JFrame {
 			}
 
 			public void mouseExited(MouseEvent evt) {
-				passMissedButton.setForeground(new Color(194, 102, 10));
+				passMissedButton.setForeground(brownCarpentryColor);
 				underLineMissed.setVisible(false);
 			}
 		});
@@ -395,7 +402,7 @@ public class Interfaz extends JFrame {
 
 		JButton sendEmail = new JButton("Enviar email de confirmacion");
 		sendEmail.setBounds(30, 175, 290, 40);
-		sendEmail.setBackground(new Color(0, 170, 50));
+		sendEmail.setBackground(greenButtonColor);
 		sendEmail.setForeground(Color.white);
 		sendEmail.setFont(sendEmail.getFont().deriveFont((float) 14));
 		sendEmail.setFocusPainted(false);
@@ -446,7 +453,7 @@ public class Interfaz extends JFrame {
 				setEmail.setLocation(30, 110);
 				emailTextField.setLocation(30, 175);
 				sendEmail.setLocation(30, 245);
-				JLabel incorrectEmail = new JLabel();
+				JLabel message = new JLabel();
 				if (validEmail) {
 					validEmail = false;
 					currentEmail = emailTextField.getText();
@@ -458,17 +465,22 @@ public class Interfaz extends JFrame {
 					currentCodeKey = script.generateCodeKey();
 					JOptionPane.showMessageDialog(null, currentCodeKey);
 				} else {
-					incorrectEmail.setBounds(30, 40, 290, 40);
-					incorrectEmail.setText("<html>Email incorrecto.<br>Intente nuevamente</html>");
-					incorrectEmail.setOpaque(true);
-					incorrectEmail.setBackground(new Color(255, 80, 80));
-					incorrectEmail.setForeground(Color.white);
-					incorrectEmail.setFont(incorrectEmail.getFont().deriveFont((float) 14));
-					incorrectEmail.setBorder(BorderFactory.createLineBorder(Color.red, 1));
-					panel.add(incorrectEmail);
+					message.setBounds(30, 40, 290, 40);
+					message.setOpaque(true);
+					message.setBackground(redErrorColor);
+					message.setForeground(Color.white);
+					message.setFont(message.getFont().deriveFont((float) 14));
+					message.setBorder(redBorder);
+					panel.add(message);
 
 					panel.revalidate();
 					panel.repaint();
+					
+					if (removeEmailExampleText) {
+						message.setText("<html>Ingrese un email para continuar.</html>");
+					} else {
+						message.setText("<html>Email incorrecto.<br>Intente nuevamente</html>");
+					}
 				}
 			}
 		});
@@ -486,10 +498,10 @@ public class Interfaz extends JFrame {
 		message.setBounds(30, 40, 290, 40);
 		message.setOpaque(true);
 		message.setText("<html>Se ha enviado el codigo de confirmacion.</html>");
-		message.setBackground(new Color(0, 200, 50));
+		message.setBackground(greenConfirmColor);
 		message.setForeground(Color.white);
 		message.setFont(message.getFont().deriveFont((float) 14));
-		message.setBorder(BorderFactory.createLineBorder(Color.green, 1));
+		message.setBorder(greenBorder);
 		panel.add(message);
 
 		JLabel setCode = new JLabel();
@@ -553,7 +565,7 @@ public class Interfaz extends JFrame {
 
 		JButton confirmKeyCode = new JButton("Confirmar codigo de confirmación");
 		confirmKeyCode.setBounds(30, 240, 290, 40);
-		confirmKeyCode.setBackground(new Color(0, 170, 50));
+		confirmKeyCode.setBackground(greenButtonColor);
 		confirmKeyCode.setForeground(Color.white);
 		confirmKeyCode.setFont(confirmKeyCode.getFont().deriveFont((float) 14));
 		confirmKeyCode.setFocusPainted(false);
@@ -679,9 +691,9 @@ public class Interfaz extends JFrame {
 				if (field1.getText().equals("") || field2.getText().equals("") || field3.getText().equals("")
 						|| field4.getText().equals("") || field5.getText().equals("")) {
 					message.setText("<html>Rellene todos los campos.</html>");
-					message.setBackground(new Color(255, 80, 80));
+					message.setBackground(redErrorColor);
 					message.setForeground(Color.white);
-					message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+					message.setBorder(redBorder);
 					message.setHorizontalAlignment(JTextField.CENTER);
 				} else {
 					codeKey = "";
@@ -695,9 +707,9 @@ public class Interfaz extends JFrame {
 						missPasswordTab.add(changePassword);
 					} else {
 						message.setText("<html>Codigo de confirmacion incorrecto.</html>");
-						message.setBackground(new Color(255, 80, 80));
+						message.setBackground(redErrorColor);
 						message.setForeground(Color.white);
-						message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+						message.setBorder(redBorder);
 					}
 				}
 			}
@@ -764,7 +776,7 @@ public class Interfaz extends JFrame {
 		JButton confirmChanges = new JButton("Confirmar cambios");
 		confirmChanges.setBounds(30, 280, 290, 40);
 		confirmChanges.setOpaque(true);
-		confirmChanges.setBackground(new Color(0, 200, 50));
+		confirmChanges.setBackground(greenButtonColor);
 		confirmChanges.setForeground(Color.white);
 		confirmChanges.setFont(confirmChanges.getFont().deriveFont((float) 14));
 		panel.add(confirmChanges);
@@ -805,10 +817,10 @@ public class Interfaz extends JFrame {
 					JLabel message = new JLabel();
 					message.setBounds(30, 40, 290, 40);
 					message.setOpaque(true);
-					message.setBackground(new Color(255, 80, 80));
+					message.setBackground(redErrorColor);
 					message.setForeground(Color.white);
 					message.setFont(message.getFont().deriveFont((float) 14));
-					message.setBorder(BorderFactory.createLineBorder(Color.red, 1));
+					message.setBorder(redBorder);
 					message.setHorizontalAlignment(JLabel.CENTER);
 					panel.add(message);
 					panel.revalidate();
@@ -836,18 +848,18 @@ public class Interfaz extends JFrame {
 		okGreenLabel.setBounds(105, 40, 135, 135);
 		ImageIcon okGreenIcon = new ImageIcon(getClass().getResource("/files/green-ok-icon.png"));
 		okGreenLabel.setIcon(new ImageIcon(okGreenIcon.getImage().getScaledInstance(135, 135, Image.SCALE_SMOOTH)));
-		okGreenLabel.setBorder(BorderFactory.createLineBorder(Color.green, 1, true));
+		okGreenLabel.setBorder(greenBorder);
 		panel.add(okGreenLabel);
 
 		JLabel message = new JLabel(
 				"<html>Su contraseña ha sido cambiada con exito.<br>" + "Ya puede cerrar esta pestaña.</html>");
 		message.setBounds(30, 200, 290, 70);
 		message.setOpaque(true);
-		message.setBackground(new Color(0, 200, 50));
+		message.setBackground(greenConfirmColor);
 		message.setForeground(Color.white);
 		message.setFont(message.getFont().deriveFont((float) 14));
 		message.setHorizontalAlignment(JLabel.CENTER);
-		message.setBorder(BorderFactory.createLineBorder(Color.green, 1));
+		message.setBorder(greenBorder);
 		panel.add(message);
 
 		return panel;
