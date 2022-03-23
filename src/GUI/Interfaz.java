@@ -1,6 +1,7 @@
 package GUI;
 
 import backend.LoginScripts;
+
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -16,9 +17,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,24 +38,33 @@ import javax.swing.border.Border;
 
 public class Interfaz extends JFrame {
 	LoginScripts script = new LoginScripts();
-	JPanel container;
-	JTabbedPaneCloseButton tabbedPane;
-	JPanel carpentryTab;
-	JPanel emailTab;
-	JPanel missPassword;
-	JPanel noEmailBody;
-	JPanel emailBody;
-	JLabel emailLabel;
-	// private boolean fullscreen;
+	
+	private JPanel container;
+	private JTabbedPaneCloseButton tabbedPane;
+	private JPanel carpentryTab;
+	private JPanel emailTab;
 	private JPanel missPasswordTab;
+	
+	private JPanel missPassword;
+	private JPanel noEmailBody;
+	private JPanel emailBody;
+	private JLabel emailLabel;
+	
+	private String currentCodeKey;
+	private String codeKey = "";
+	private List<JLabel> emails = new ArrayList<>();
+	private List<JPanel> emailsText = new ArrayList<>();
+	private int beforeIndex;
+	private JScrollPane emailsSectionScroll;
+	private JPanel emailsSectionPanel;
+	
+	// private boolean fullscreen;
 	private boolean removeUserExampleText = true;
 	private boolean removePasswordExampleText = true;
 	private boolean removeEmailExampleText = true;
 	private String currentEmail;
 	private boolean validEmail;
 	// private int tabCount;
-	private String currentCodeKey;
-	private String codeKey = "";
 	private final Color brownCarpentryColor = new Color(194, 102, 10);
 	private final Color redErrorColor = new Color(255, 80, 80);
 	private final Border redBorder = BorderFactory.createLineBorder(Color.red, 2);  
@@ -59,11 +72,6 @@ public class Interfaz extends JFrame {
 	private final Color greenButtonColor = new Color(0, 170, 50);
 	private final Border greenBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 2);
 	private final Border blackBorder = BorderFactory.createLineBorder(Color.black, 1);
-	private List<JLabel> emails = new ArrayList<>();
-	private List<JPanel> emailsText = new ArrayList<>();
-	private int beforeIndex;
-	private JScrollPane emailsSectionScroll;
-	private JPanel emailsSectionPanel;
 
 	public Interfaz() {
 		initWindow();

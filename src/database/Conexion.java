@@ -3,7 +3,12 @@ package database;
 import java.sql.*;
 
 public class Conexion {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/info_usuarios?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static String vendor="mysql";
+    private static String server="localhost";
+    private static String port="3306";    
+    private static String db="info_usuarios";
+    private static String params="?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+    private static final String JDBC_URL = "jdbc:"+vendor+"://"+server+":"+port+"/"+db+params;
     private static final String USER = "root";
     private static final String PASSWORD = "Jerus";
     
