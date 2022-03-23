@@ -4,6 +4,7 @@ import backend.LoginScripts;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -15,14 +16,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
@@ -35,6 +39,9 @@ public class Interfaz extends JFrame {
 	JPanel carpentryTab;
 	JPanel emailTab;
 	JPanel missPassword;
+	JPanel noEmailBody;
+	JPanel emailBody;
+	JLabel emailLabel;
 	// private boolean fullscreen;
 	private JPanel missPasswordTab;
 	private boolean removeUserExampleText = true;
@@ -45,12 +52,18 @@ public class Interfaz extends JFrame {
 	// private int tabCount;
 	private String currentCodeKey;
 	private String codeKey = "";
-	private Color brownCarpentryColor = new Color(194, 102, 10);
-	private Color redErrorColor = new Color(255, 80, 80);
-	private Border redBorder = BorderFactory.createLineBorder(Color.red, 2);  
-	private Color greenConfirmColor = new Color(80, 255, 80);
-	private Color greenButtonColor = new Color(0, 170, 50);
-	private Border greenBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 2);
+	private final Color brownCarpentryColor = new Color(194, 102, 10);
+	private final Color redErrorColor = new Color(255, 80, 80);
+	private final Border redBorder = BorderFactory.createLineBorder(Color.red, 2);  
+	private final Color greenConfirmColor = new Color(80, 255, 80);
+	private final Color greenButtonColor = new Color(0, 170, 50);
+	private final Border greenBorder = BorderFactory.createLineBorder(new Color(0, 255, 0), 2);
+	private final Border blackBorder = BorderFactory.createLineBorder(Color.black, 1);
+	private List<JLabel> emails = new ArrayList<>();
+	private List<JPanel> emailsText = new ArrayList<>();
+	private int beforeIndex;
+	private JScrollPane emailsSectionScroll;
+	private JPanel emailsSectionPanel;
 
 	public Interfaz() {
 		initWindow();
@@ -84,12 +97,12 @@ public class Interfaz extends JFrame {
 		tabbedPane.setBackground(Color.black);
 		tabbedPane.setForeground(Color.white);
 		createCarpentryTab();
-		// createEmailTab(); --Esto sirve
+		createEmailTab();
 		tabbedPane.addTab("Carpinteria Sarabia", new ImageIcon(getClass().getResource("/files/carpentry-icon.jpg")),
 				carpentryTab, "www.carpinteria-sarabia.com/login");
-		// tabbedPane.addTab("Email", new
-		// ImageIcon(getClass().getResource("/files/mail-icon.jpg")),
-		// emailTab, "www.email.com"); --Esto sirve
+		tabbedPane.addTab("Email", new
+				ImageIcon(getClass().getResource("/files/mail-icon.jpg")),
+				emailTab, "www.email.com");
 		container.add(tabbedPane);
 	}
 
@@ -109,7 +122,7 @@ public class Interfaz extends JFrame {
 		panelTitleLogin.setLayout(null);
 		carpentryTab.add(panelTitleLogin);
 
-		JLabel titleLabel = new JLabel("<html>Inicio de sesión<br>de empleados.</html>");
+		JLabel titleLabel = new JLabel("<html>Inicio de sesi\u00F3n<br>de empleados.</html>");
 		titleLabel.setBounds(80, 40, 316, 85);
 		titleLabel.setOpaque(true);
 		titleLabel.setBackground(null);
@@ -318,7 +331,7 @@ public class Interfaz extends JFrame {
 					case 1:
 						message.setBackground(redErrorColor);
 						message.setBorder(redBorder);
-						message.setText("Contraseña incorrecta.");
+						message.setText("Contrase\u00F1a incorrecta.");
 						break;
 					case -1:
 						message.setBackground(redErrorColor);
@@ -365,19 +378,19 @@ public class Interfaz extends JFrame {
 		carpentryLogo.setIcon(new ImageIcon(getClass().getResource("/files/carpentry-icon1.jpg")));
 		missPasswordTab.add(carpentryLogo);
 
-		JLabel passwordMissedTitle = new JLabel("Cambiar contraseña");
+		JLabel passwordMissedTitle = new JLabel("Cambiar contrase\u00F1a");
 		passwordMissedTitle.setBounds(583, 125, 200, 50);
 		passwordMissedTitle.setBackground(Color.white);
 		passwordMissedTitle.setForeground(Color.black);
 		passwordMissedTitle.setFont(passwordMissedTitle.getFont().deriveFont((float) 20));
 		missPasswordTab.add(passwordMissedTitle);
-		
+
 		JPanel sendEmailPanel = createSendEmailPanel();
 		missPasswordTab.add(sendEmailPanel);
-		
+
 		return missPasswordTab;
 	}
-	
+
 	private JPanel createSendEmailPanel() {		
 		JPanel panel = new JPanel();
 		panel.setBounds(509, 200, 350, 450);
@@ -407,6 +420,14 @@ public class Interfaz extends JFrame {
 		sendEmail.setFont(sendEmail.getFont().deriveFont((float) 14));
 		sendEmail.setFocusPainted(false);
 		panel.add(sendEmail);
+
+		JLabel message = new JLabel();
+		message.setBounds(30, 40, 290, 40);
+		message.setOpaque(true);
+		message.setBackground(redErrorColor);
+		message.setForeground(Color.white);
+		message.setFont(message.getFont().deriveFont((float) 14));
+		message.setBorder(redBorder);
 
 		emailTextField.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent evt) {
@@ -445,46 +466,90 @@ public class Interfaz extends JFrame {
 				}
 			}
 		});
-		
+
 		sendEmail.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				validEmail = script.validateEmail(emailTextField.getText());
-				setEmail.setLocation(30, 110);
-				emailTextField.setLocation(30, 175);
-				sendEmail.setLocation(30, 245);
-				JLabel message = new JLabel();
 				if (validEmail) {
 					validEmail = false;
 					currentEmail = emailTextField.getText();
+					if (emails.isEmpty()) {
+						emailLabel = new JLabel(putEmailInfo());
+						emailLabel.setBounds(0, 0, 500, 100);
+						emailLabel.setOpaque(true);
+						emailLabel.setBackground(Color.white);
+						emailLabel.setFont(emailLabel.getFont().deriveFont((float) 14));
+						emailLabel.setBorder(blackBorder);
+					} else {
+						int emailsSize = emails.size();
+						for (int i = 0; i < emails.size(); i++) {
+							JLabel anteriorLabel = emails.get(i);
+							anteriorLabel.setLocation(0, (int)(100*emailsSize));
+							emailsSize--;
+						}
+						emailLabel = new JLabel(putEmailInfo());
+						emailLabel.setBounds(0, 0, 500, 100);
+						emailLabel.setOpaque(true);
+						emailLabel.setBackground(Color.white);
+						emailLabel.setFont(emailLabel.getFont().deriveFont((float) 14));
+						emailLabel.setBorder(blackBorder);
+					}
+					createEmailBodyPanel();
+					emailLabel.addMouseListener(new MouseAdapter() {
+						public void mousePressed(MouseEvent evt) {
+							for (int i = 0; i < emails.size(); i++) {
+								if (emails.get(i).equals(evt.getComponent())) {
+									if (noEmailBody.isDisplayable()) {
+										emailTab.remove(noEmailBody);
+									} else {
+										emailTab.remove(emailsText.get(beforeIndex));
+									}
+									emailTab.add(emailsText.get(i));
+									emailTab.revalidate();
+									emailTab.repaint();
+									beforeIndex = i;
+								}
+							}
+						}
+					});
+
+					emailsSectionPanel.add(emailLabel);
+					emails.add(emailLabel);
+
+					emailsSectionPanel.setSize(500, (int)100*emails.size()+30);
+					emailsSectionPanel.setPreferredSize(new Dimension(500, (int)100*emails.size()+30));
+					emailsSectionPanel.revalidate();
+					emailsSectionPanel.repaint();
+					emailsSectionScroll.revalidate();
+
 					missPasswordTab.remove(panel);
-					missPasswordTab.revalidate();
-					missPasswordTab.repaint();
 					JPanel restorePassword = createEnterKeyCodePanel();
 					missPasswordTab.add(restorePassword);
-					currentCodeKey = script.generateCodeKey();
-					JOptionPane.showMessageDialog(null, currentCodeKey);
+					missPasswordTab.revalidate();
+					missPasswordTab.repaint();
 				} else {
-					message.setBounds(30, 40, 290, 40);
-					message.setOpaque(true);
-					message.setBackground(redErrorColor);
-					message.setForeground(Color.white);
-					message.setFont(message.getFont().deriveFont((float) 14));
-					message.setBorder(redBorder);
-					panel.add(message);
-
-					panel.revalidate();
-					panel.repaint();
-					
-					if (removeEmailExampleText) {
+					setEmail.setLocation(30, 110);
+					emailTextField.setLocation(30, 175);
+					sendEmail.setLocation(30, 245);
+					if (message.isDisplayable()) {
+						panel.remove(message);
+					}
+					if (removeEmailExampleText || emailTextField.getText().equals("")) {
 						message.setText("<html>Ingrese un email para continuar.</html>");
 					} else {
 						message.setText("<html>Email incorrecto.<br>Intente nuevamente</html>");
 					}
+					panel.add(message);
+					panel.revalidate();
+					panel.repaint();
+
+
 				}
+
 			}
 		});
-		
+
 		return panel;
 	}
 
@@ -520,7 +585,7 @@ public class Interfaz extends JFrame {
 		field1.setForeground(Color.black);
 		field1.setFont(field1.getFont().deriveFont((float) 24));
 		field1.setHorizontalAlignment(JTextField.CENTER);
-		field1.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+		field1.setBorder(blackBorder);
 		panel.add(field1);
 
 		JTextField field2 = new JTextField();
@@ -530,7 +595,7 @@ public class Interfaz extends JFrame {
 		field2.setForeground(Color.black);
 		field2.setFont(field2.getFont().deriveFont((float) 24));
 		field2.setHorizontalAlignment(JTextField.CENTER);
-		field2.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+		field2.setBorder(blackBorder);
 		panel.add(field2);
 
 		JTextField field3 = new JTextField();
@@ -540,7 +605,7 @@ public class Interfaz extends JFrame {
 		field3.setForeground(Color.black);
 		field3.setFont(field3.getFont().deriveFont((float) 24));
 		field3.setHorizontalAlignment(JTextField.CENTER);
-		field3.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+		field3.setBorder(blackBorder);
 		panel.add(field3);
 
 		JTextField field4 = new JTextField();
@@ -550,7 +615,7 @@ public class Interfaz extends JFrame {
 		field4.setForeground(Color.black);
 		field4.setFont(field4.getFont().deriveFont((float) 24));
 		field4.setHorizontalAlignment(JTextField.CENTER);
-		field4.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+		field4.setBorder(blackBorder);
 		panel.add(field4);
 
 		JTextField field5 = new JTextField();
@@ -560,7 +625,7 @@ public class Interfaz extends JFrame {
 		field5.setForeground(Color.black);
 		field5.setFont(field5.getFont().deriveFont((float) 24));
 		field5.setHorizontalAlignment(JTextField.CENTER);
-		field5.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+		field5.setBorder(blackBorder);
 		panel.add(field5);
 
 		JButton confirmKeyCode = new JButton("Confirmar codigo de confirmación");
@@ -684,7 +749,7 @@ public class Interfaz extends JFrame {
 				}
 			}
 		});
-		
+
 		confirmKeyCode.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -698,7 +763,7 @@ public class Interfaz extends JFrame {
 				} else {
 					codeKey = "";
 					codeKey += field1.getText() + field2.getText() + field3.getText() + field4.getText()
-							+ field5.getText();
+					+ field5.getText();
 					if (codeKey.equals(currentCodeKey)) {
 						missPasswordTab.remove(panel);
 						missPasswordTab.revalidate();
@@ -780,7 +845,16 @@ public class Interfaz extends JFrame {
 		confirmChanges.setForeground(Color.white);
 		confirmChanges.setFont(confirmChanges.getFont().deriveFont((float) 14));
 		panel.add(confirmChanges);
-		
+
+		JLabel message = new JLabel();
+		message.setBounds(30, 40, 290, 40);
+		message.setOpaque(true);
+		message.setBackground(redErrorColor);
+		message.setForeground(Color.white);
+		message.setFont(message.getFont().deriveFont((float) 14));
+		message.setBorder(redBorder);
+		message.setHorizontalAlignment(JLabel.CENTER);
+
 		newPassword.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent evt) {
 				if (evt.getKeyChar() == '\n') {
@@ -788,7 +862,7 @@ public class Interfaz extends JFrame {
 				}
 			}
 		});
-		
+
 		confirmPassword.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent evt) {
 				if (evt.getKeyChar() == '\n') {
@@ -796,11 +870,18 @@ public class Interfaz extends JFrame {
 				}
 			}
 		});
-		
+
 		confirmChanges.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				if ((newPassword.getText().equals(confirmPassword.getText()) && !newPassword.getText().equals(""))) {
+				boolean validPasswords = (
+						newPassword.getText().equals(confirmPassword.getText()) 
+						&& !newPassword.getText().equals("")
+						) && (
+								newPassword.getText().length() >= 8
+								&& confirmPassword.getText().length() >= 8
+								);
+				if (validPasswords) {
 					script.updatePassword(currentEmail, newPassword.getText());
 					missPasswordTab.remove(panel);
 					missPasswordTab.revalidate();
@@ -813,24 +894,20 @@ public class Interfaz extends JFrame {
 					textConfirmPassword.setLocation(30, 220);
 					confirmPassword.setLocation(30, 280);
 					confirmChanges.setLocation(30, 340);
-
-					JLabel message = new JLabel();
-					message.setBounds(30, 40, 290, 40);
-					message.setOpaque(true);
-					message.setBackground(redErrorColor);
-					message.setForeground(Color.white);
-					message.setFont(message.getFont().deriveFont((float) 14));
-					message.setBorder(redBorder);
-					message.setHorizontalAlignment(JLabel.CENTER);
-					panel.add(message);
-					panel.revalidate();
-					panel.repaint();
-
 					if (newPassword.getText().equals("") || confirmPassword.getText().equals("")) {
 						message.setText("<html>Rellene todos los campos.</html>");
+					} else if (newPassword.getText().length() < 8
+							&& confirmPassword.getText().length() < 8){
+						message.setText("<html>Las contraseñas deben ser de mas de 8 caracteres.</html>");
 					} else {
 						message.setText("<html>Las contraseñas no coinciden.</html>");
 					}
+					if (message.isDisplayable()) {
+						panel.remove(message);
+					}
+					panel.add(message);
+					panel.revalidate();
+					panel.repaint();
 				}
 			}
 		});
@@ -865,12 +942,154 @@ public class Interfaz extends JFrame {
 		return panel;
 	}
 
-	/*
-	 * private void createEmailTab(){ emailTab = new JPanel();
-	 * emailTab.setBackground(Color.white); emailTab.setLayout(null);
-	 * 
-	 * //JLabel emailLogo = new JLabel(); }
-	 */
+	private void createEmailTab(){ 
+		emailTab = new JPanel();
+		emailTab.setBackground(Color.white);
+		emailTab.setLayout(null);
+
+		JLabel emailLogo = new JLabel();
+		emailLogo.setBounds(0, 0, 50, 50);
+		emailLogo.setOpaque(true);
+		emailLogo.setIcon(new ImageIcon(getClass().getResource("/files/icon-email-50x50.jpg")));
+		emailLogo.setBackground(Color.white);
+		emailTab.add(emailLogo);
+
+		JLabel emailTitle = new JLabel("email.com");
+		emailTitle.setBounds(50, 0, 450, 50);
+		emailTitle.setOpaque(true);
+		emailTitle.setBackground(new Color(51, 153, 255));
+		emailTitle.setForeground(Color.black);
+		emailTitle.setFont(emailTitle.getFont().deriveFont((float) 18));
+		emailTitle.setHorizontalAlignment(JLabel.CENTER);
+		emailTab.add(emailTitle);
+
+		JLabel emailUpperBar = new JLabel(" ");
+		emailUpperBar.setBounds(500, 0, 866, 50);
+		emailUpperBar.setOpaque(true);
+		emailUpperBar.setBackground(new Color(51, 153, 255));
+		emailUpperBar.setForeground(Color.black);
+		emailUpperBar.setFont(emailTitle.getFont().deriveFont((float) 18));
+		emailTab.add(emailUpperBar);
+
+		emailsSectionScroll = new JScrollPane();
+		emailsSectionScroll.setBounds(0, 50, 500, 718);
+		emailsSectionScroll.setPreferredSize(new Dimension(500, 3000));
+		emailsSectionScroll.setMinimumSize(new Dimension(500, 3000));
+		emailsSectionScroll.setMaximumSize(new Dimension(500, 3000));
+		emailsSectionScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		emailsSectionPanel = new JPanel();
+		emailsSectionPanel.setBounds(0, 0, 500, 0);
+		emailsSectionPanel.setPreferredSize(new Dimension(500, 0));
+		emailsSectionPanel.setLayout(null);
+		emailsSectionPanel.setBackground(Color.white);
+
+		emailsSectionScroll.setViewportView(emailsSectionPanel);
+		emailTab.add(emailsSectionScroll);
+
+		noEmailBody = new JPanel();
+		noEmailBody.setBounds(500, 0, 866, 768);
+		noEmailBody.setLayout(null);
+		noEmailBody.setBackground(new Color(50, 50, 50, 50));
+		emailTab.add(noEmailBody);
+
+		JLabel noEmailSelected = new JLabel();
+		noEmailSelected.setBounds(233, 325, 400, 50);
+		noEmailSelected.setOpaque(true);
+		noEmailSelected.setText("<html>Seleccione un elemento para leerlo"
+				+ "         No hay nada seleccionado.</html>");
+		noEmailSelected.setBackground(new Color(255, 255, 255));
+		noEmailSelected.setForeground(Color.black);
+		noEmailSelected.setFont(noEmailSelected.getFont().deriveFont((float) 14));
+		noEmailSelected.setHorizontalAlignment(JLabel.CENTER);
+		noEmailBody.add(noEmailSelected);
+	}
+
+	private void createEmailBodyPanel() {
+		emailBody = new JPanel();
+		emailBody.setBounds(500, 50, 866, 718);
+		emailBody.setLayout(null);
+		emailBody.setBackground(Color.white);
+		emailBody.setBorder(blackBorder);
+
+		JLabel subject = new JLabel();
+		subject.setBounds(0, 0, 866, 100);
+		subject.setOpaque(true);
+		subject.setText("Recuperacion de contraseña.");
+		subject.setBackground(new Color(0, 204, 102));
+		subject.setForeground(Color.black);
+		subject.setFont(subject.getFont().deriveFont((float)24));
+		subject.setBorder(greenBorder);
+		emailBody.add(subject);
+
+		JLabel sender = new JLabel();
+		sender.setBounds(0, 100, 866, 25);
+		sender.setOpaque(true);
+		sender.setText("Equipo de soporte Carpinteria Sarabia");
+		sender.setBackground(new Color(51, 255, 153));
+		sender.setForeground(Color.black);
+		sender.setFont(sender.getFont().deriveFont((float) 18));
+		emailBody.add(sender);
+
+		JLabel emailSender = new JLabel();
+		emailSender.setBounds(0, 125, 866, 25);
+		emailSender.setOpaque(true);
+		emailSender.setText("support@sarabia.com.mx");
+		emailSender.setBackground(new Color(51, 255, 153));
+		emailSender.setForeground(Color.black);
+		emailSender.setFont(emailSender.getFont().deriveFont((float) 18));
+		emailBody.add(emailSender);
+
+		String[] dateTime = getDateTime();
+		JLabel date = new JLabel();
+		date.setBounds(0,  150, 866, 25);
+		date.setOpaque(true);
+		date.setText(dateTime[0] + "     " + dateTime[1]);
+		date.setBackground(new Color(51, 255, 153));
+		date.setForeground(Color.black);
+		date.setFont(date.getFont().deriveFont((float) 18));
+		emailBody.add(date);
+
+		JPanel borderEmailText = new JPanel();
+		borderEmailText.setBounds(140, 225, 600, 400);
+		borderEmailText.setLayout(null);
+		borderEmailText.setBackground(Color.white);
+		borderEmailText.setBorder(blackBorder);
+		emailBody.add(borderEmailText);
+
+		JLabel textEmail = new JLabel();
+		textEmail.setBounds(50, 50, 500, 200);
+		textEmail.setOpaque(true);
+		String infoTextEmail = String.format("""
+				<html>
+				<p align="justify">Hola %s.<br>
+				Alguien esta intentando cambiar su contraseña.
+				En caso de no ser usted ignore este correo.
+				Si desea cambiar su contraseña introduzca
+				el siguiente codigo de confirmacion:<p></html>
+				""", script.selectName(currentEmail));
+		textEmail.setText(infoTextEmail);
+		textEmail.setBackground(Color.white);
+		textEmail.setForeground(Color.black);
+		textEmail.setFont(textEmail.getFont().deriveFont((float) 24));
+		textEmail.setVerticalAlignment(JLabel.TOP);
+		//textEmail.setBorder(null);
+		borderEmailText.add(textEmail);
+
+		JLabel codeKeyLabel = new JLabel();
+		codeKeyLabel.setBounds(250, 255, 100, 50);
+		codeKeyLabel.setOpaque(true);
+		currentCodeKey = script.generateCodeKey();
+		codeKeyLabel.setText(currentCodeKey);
+		codeKeyLabel.setBackground(Color.white);
+		codeKeyLabel.setForeground(Color.black);
+		codeKeyLabel.setFont(codeKeyLabel.getFont().deriveFont((float) 24));
+		codeKeyLabel.setHorizontalAlignment(JLabel.CENTER);
+		codeKeyLabel.setBorder(blackBorder);
+		borderEmailText.add(codeKeyLabel);
+
+		emailsText.add(emailBody);
+	}
 
 	private void createActionButtons() {
 		JButton minimizeButton = new JButton();
@@ -897,9 +1116,9 @@ public class Interfaz extends JFrame {
 		try {
 			maximizeButton.setCursor(Cursor.getSystemCustomCursor("Invalid.32x32"));
 		} catch (HeadlessException e) {
-			e.printStackTrace();
+			e.printStackTrace(System.out);
 		} catch (AWTException e) {
-			e.printStackTrace();
+			e.printStackTrace(System.out);
 		}
 		container.add(maximizeButton);
 
@@ -930,29 +1149,29 @@ public class Interfaz extends JFrame {
 				minimizeButton.setBackground(Color.black);
 			}
 		});
-		
-//      maximizeButton.addActionListener(new ActionListener(){
-//		@Override
-//          public void actionPerformed(ActionEvent evt){
-//              if ( fullscreen ){
-//                  maximizeButton.setText("\u25A1");
-//                  fullscreen = false;
-//              } else {
-//                  maximizeButton.setText("\uD83D\uDDD7");
-//                  fullscreen = true;
-//              }
-//          }
-//      });
-//      maximizeButton.addMouseListener(new MouseAdapter() {
-//          @Override
-//          public void mouseEntered (MouseEvent evt){
-//              maximizeButton.setBackground(new Color(55,55,55));
-//          }
-//          public void mouseExited (MouseEvent evt){
-//              maximizeButton.setBackground(Color.black);
-//          }
-//      });
-		
+
+		//      maximizeButton.addActionListener(new ActionListener(){
+		//		@Override
+		//          public void actionPerformed(ActionEvent evt){
+		//              if ( fullscreen ){
+		//                  maximizeButton.setText("\u25A1");
+		//                  fullscreen = false;
+		//              } else {
+		//                  maximizeButton.setText("\uD83D\uDDD7");
+		//                  fullscreen = true;
+		//              }
+		//          }
+		//      });
+		//      maximizeButton.addMouseListener(new MouseAdapter() {
+		//          @Override
+		//          public void mouseEntered (MouseEvent evt){
+		//              maximizeButton.setBackground(new Color(55,55,55));
+		//          }
+		//          public void mouseExited (MouseEvent evt){
+		//              maximizeButton.setBackground(Color.black);
+		//          }
+		//      });
+
 		exitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -971,4 +1190,67 @@ public class Interfaz extends JFrame {
 		});
 	}
 
+	private String[] getDateTime() {
+		LocalDateTime localDateTime = LocalDateTime.now();
+		String day;
+		if (localDateTime.getDayOfMonth() < 10) {
+			day = "0" + localDateTime.getDayOfMonth();
+		} else {
+			day = "" + localDateTime.getDayOfMonth();
+		}
+		String month;
+		if (localDateTime.getMonthValue() < 10) {
+			month = "0" + localDateTime.getMonthValue();
+		} else {
+			month = "" + localDateTime.getDayOfMonth();
+		}
+		String year = "" + localDateTime.getYear();
+		String date = day + "/" + month + "/" + year;
+
+		String hour;
+		if (localDateTime.getHour() < 10) {
+			hour = "0" + localDateTime.getHour();
+		} else {
+			hour = "" + localDateTime.getHour();
+		}
+		String minutes;
+		if (localDateTime.getMinute() < 10) {
+			minutes = "0" + localDateTime.getMinute();
+		} else {
+			minutes = "" + localDateTime.getMinute();
+		}
+		String time = hour + ":" + minutes;
+
+		String[] dateTime = {date, time};
+		return dateTime;
+	}
+
+	private String putEmailInfo() {
+		String[] dateTime = getDateTime();
+
+		String emailInfo = String.format("""
+				<html>
+				<table width = 480>
+				<tbody>
+				<tr>
+				<td>Equipo de soporte</td>
+				<td>&#9;</td>
+				<td>&#9;</td>
+				<td>%s</td>
+				</tr>
+				<tr>
+				<td>Cambio de contraseña</td>
+				<td>&#9;</td>
+				<td>&#9;</td>
+				<td>%s</td>
+				</tr>
+				<tr>
+				<td>%s</td>
+				</tr>
+				</tbody>
+				</table>
+				</html>
+				""", dateTime[0], dateTime[1], currentEmail);
+		return emailInfo;
+	}
 }

@@ -12,7 +12,8 @@ public class LoginScripts {
     List<Usuario> users = querys.seleccionar();
     private int returnValue;
     private boolean validateLogin;
-    private boolean isEmailCorrect = false;
+    private boolean isEmailCorrect;
+    String returnName;
     private String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",};
     Random random = new Random();
     
@@ -38,6 +39,7 @@ public class LoginScripts {
     }
     
     public boolean validateEmail(String email) {
+    	isEmailCorrect = false;
     	users.forEach(user ->{
 	    		if (user.getEmail().equals(email)){
 	    			isEmailCorrect = true;
@@ -64,5 +66,16 @@ public class LoginScripts {
     			querys.actualizarPassword(user);
     		}
     	});
+    }
+    
+    public String selectName(String email) {
+    	returnName = "";
+    	users.forEach(user ->{
+    		if (user.getEmail().equals(email)) {
+    			returnName = user.getNombres() + " " + user.getApellidos();
+    			return;
+    		}
+    	});
+    	return returnName;
     }
 }
