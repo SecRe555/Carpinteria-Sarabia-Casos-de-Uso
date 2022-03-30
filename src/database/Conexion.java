@@ -1,19 +1,39 @@
 package database;
 
-import java.sql.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
 public class Conexion {
-    private static String vendor="mysql";
-    private static String server="localhost";
-    private static String port="3306";    
-    private static String db="info_usuarios";
-    private static String params="?useSSL=false&useTimezone=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
-    private static final String JDBC_URL = "jdbc:"+vendor+"://"+server+":"+port+"/"+db+params;
-    private static final String USER = "root";
-    private static final String PASSWORD = "Jerus";
+    
+    private static Properties properties = null;
+    private static String JDBC_URL       = "url";
+    private static String USER           = "user";
+    private static String PASSWORD       = "password";
+    
     
     public static Connection getConnection() throws SQLException{
-        return DriverManager.getConnection(JDBC_URL, USER, PASSWORD);
+        try {
+            properties = new Properties();
+            InputStream file = new FileInputStream("C:\\Users\\Admin\\Desktop\\GitHub_Construccion\\casos_de_uso\\src\\database\\dbConfig.properties");
+            properties.load(file);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace(System.out);
+            System.exit(0);
+        } catch (IOException ex) {
+            ex.printStackTrace(System.out);
+            System.exit(0);
+        }
+        return DriverManager.getConnection(properties.getProperty(JDBC_URL), 
+                properties.getProperty(USER), properties.getProperty(PASSWORD));
     }
     
     public static void close(ResultSet rs) throws SQLException{
