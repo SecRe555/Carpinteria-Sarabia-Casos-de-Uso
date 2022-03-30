@@ -1,6 +1,8 @@
 package GUI;
 
-//Importaciones
+/**
+ * Importaciones
+ */
 import backend.LoginScripts;
 
 import java.awt.AWTException;
@@ -45,7 +47,7 @@ import javax.swing.border.Border;
 public class Interfaz extends JFrame {
     //Scripsts usados en el programa
     LoginScripts script = new LoginScripts();
-    //Contenedor y pesta\u00F1as
+    //Contenedor y pestañas
     private JPanel container;
     private JTabbedPaneCloseButton tabbedPane;
     private JPanel loginTab;
@@ -73,14 +75,14 @@ public class Interfaz extends JFrame {
     private boolean validEmail;
     // private int tabCount;
     //Colores y bordes
-    private final Color brownCarpentryColor = new Color(194, 102, 10);
-    private final Color redErrorColor       = new Color(255, 80, 80);
+    private final Color brownCarpentryColor = new Color(163, 55, 20);
+    private final Color redErrorColor       = new Color(244, 81, 108);
     private final Border redBorder          = BorderFactory.createLineBorder
                                             (Color.red, 2);
-    private final Color greenConfirmColor   = new Color(80, 255, 80);
-    private final Color greenButtonColor    = new Color(0, 170, 50);
+    private final Color greenConfirmColor   = new Color(108, 244, 81);
+    private final Color greenButtonColor    = new Color(46, 160, 67);
     private final Border greenBorder        = BorderFactory.createLineBorder
-                                            (new Color(0, 255, 0), 2);
+                                            (Color.green, 2);
     private final Border blackBorder        = BorderFactory.createLineBorder
                                             (Color.black, 1);
     /**
@@ -124,7 +126,7 @@ public class Interfaz extends JFrame {
     private void createContainer() {
         container = new JPanel();
         container.setLayout(null);
-        container.setBackground(Color.black);
+        container.setBackground(new Color(43, 43, 43));
         this.getContentPane().add(container);
     }
     
@@ -135,7 +137,7 @@ public class Interfaz extends JFrame {
         UIManager.put("TabbedPane.selected", new Color(100, 100, 100));
         tabbedPane = new JTabbedPaneCloseButton();
         tabbedPane.setBounds(0, 0, 1366, 768);
-        tabbedPane.setBackground(Color.black);
+        tabbedPane.setBackground(new Color(43, 43, 43));
         tabbedPane.setForeground(Color.white);
         createLoginTab();
         createEmailTab();
@@ -154,7 +156,7 @@ public class Interfaz extends JFrame {
         loginTab = new JPanel();
         loginTab.setBackground(new Color(255, 255, 255));
         loginTab.setLayout(null);
-
+        
         JLabel imgLogin = new JLabel();
         imgLogin.setBounds(0, 0, 850, 748);
         imgLogin.setIcon(new ImageIcon(getClass().
@@ -423,9 +425,9 @@ public class Interfaz extends JFrame {
     }
     
     /**
-     * Crear la pestaña para cambiar la contraseña.
+     * Crea la pestaña para cambiar la contraseña.
      * @return el panel para poder inicializar la pestaña usando el constructor
-     * @see {@code createLoginTab()}
+     * @see createLoginTab()
      */
     private JPanel createMissPasswordTab() {
         missPasswordTab = new JPanel();
@@ -456,7 +458,7 @@ public class Interfaz extends JFrame {
      * Crea el formulario para introducir el correo a enviar el codigo de 
      * confirmación.
      * @return el panel que sera colocado en la pestaña de contraseña olvidada
-     * @see {@code createMissPasswordTab()}
+     * @see createMissPasswordTab()
      */
     private JPanel createSendEmailPanel() {
         JPanel panel = new JPanel();
@@ -496,6 +498,7 @@ public class Interfaz extends JFrame {
         message.setBackground(redErrorColor);
         message.setForeground(Color.white);
         message.setFont(message.getFont().deriveFont((float) 14));
+        message.setHorizontalAlignment(JLabel.CENTER);
         message.setBorder(redBorder);
 
         emailTextField.addKeyListener(new KeyAdapter() {
@@ -630,12 +633,12 @@ public class Interfaz extends JFrame {
     }
     
     /**
-     * Crear el panel que contendra el formulario para introducir el codigo de 
+     * Crea el panel que contendra el formulario para introducir el codigo de 
      * confirmacion.
      * @return el panel que reemplazara el formulario para introducir el email
      * donde se enviara el codigo de confirmacion
-     * @see {@code createMissPasswordTab()}
-     * @see {@code createSendEmailPanel()}
+     * @see createMissPasswordTab()
+     * @see createSendEmailPanel()
      */ 
     private JPanel createEnterKeyCodePanel() {
         JPanel panel = new JPanel();
@@ -900,11 +903,11 @@ public class Interfaz extends JFrame {
     }
     
     /**
-     * Crear el panel que contendra el formulario para actualizar la contraseña.
+     * Crea el panel que contendra el formulario para actualizar la contraseña.
      * @return el panel que reemplazara el formulario para introducir el codigo 
      * de confirmacion
-     * @see {@code createMissPasswordTab()}
-     * @see {@code createEnterKeyCodePanel()}
+     * @see createMissPasswordTab()
+     * @see createEnterKeyCodePanel()
      */
     private JPanel createChangePasswordPanel() {
         JPanel panel = new JPanel();
@@ -1040,18 +1043,18 @@ public class Interfaz extends JFrame {
     }
     
     /**
-     * Crear el panel que muestra la confirmacion de la contraseña actualizada.
+     * Crea el panel que muestra la confirmacion de la contraseña actualizada.
      * @return el panel que reemplazara el formulario para actualizar la
      * contraseña
-     * @see {@code createMissPasswordTab()}
-     * @see {@code createChangePasswordPanel()}
+     * @see createMissPasswordTab()
+     * @see createChangePasswordPanel()
      */
     private JPanel createPasswordChangedPanel() {
         JPanel panel = new JPanel();
         panel.setBounds(509, 200, 350, 450);
         panel.setLayout(null);
         panel.setBackground(new Color(225, 225, 225));
-
+        
         JLabel okGreenLabel = new JLabel();
         okGreenLabel.setBounds(105, 40, 135, 135);
         ImageIcon okGreenIcon = new ImageIcon(getClass().
@@ -1240,14 +1243,14 @@ public class Interfaz extends JFrame {
     }
     
     /**
-     * Crear los botones minimizar, maximizar y cerrar.
+     * Crea los botones minimizar, maximizar y cerrar.
      */
     private void createActionButtons() {
         JButton minimizeButton = new JButton();
         minimizeButton.setBounds(1216, 0, 50, 40);
         minimizeButton.setText("\uD83D\uDDD5");
         minimizeButton.setToolTipText("Minimizar");
-        minimizeButton.setBackground(Color.black);
+        minimizeButton.setBackground(new Color(43, 43, 43));
         minimizeButton.setForeground(Color.white);
         minimizeButton.setFont(minimizeButton.getFont().deriveFont((float) 14));
         minimizeButton.setFocusPainted(false);
@@ -1258,7 +1261,7 @@ public class Interfaz extends JFrame {
         maximizeButton.setBounds(1266, 0, 50, 40);
         maximizeButton.setText("\uD83D\uDDD7");
         maximizeButton.setToolTipText("Maximizar");
-        maximizeButton.setBackground(Color.black);
+        maximizeButton.setBackground(new Color(43, 43, 43));
         maximizeButton.setForeground(Color.white);
         maximizeButton.setFont(maximizeButton.getFont().deriveFont((float) 14));
         maximizeButton.setFocusPainted(false);
@@ -1276,7 +1279,7 @@ public class Interfaz extends JFrame {
         exitButton.setBounds(1316, 0, 50, 40);
         exitButton.setText("\u2715");
         exitButton.setToolTipText("Salir");
-        exitButton.setBackground(Color.black);
+        exitButton.setBackground(new Color(43, 43, 43));
         exitButton.setForeground(Color.white);
         exitButton.setFont(exitButton.getFont().deriveFont((float) 14));
         exitButton.setFocusPainted(false);
@@ -1292,11 +1295,11 @@ public class Interfaz extends JFrame {
         minimizeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                minimizeButton.setBackground(new Color(55, 55, 55));
+                minimizeButton.setBackground(new Color(65, 65, 65));
             }
 
             public void mouseExited(MouseEvent evt) {
-                minimizeButton.setBackground(Color.black);
+                minimizeButton.setBackground(new Color(43, 43, 43));
             }
         });
         // No usado por el momento.
@@ -1315,10 +1318,10 @@ public class Interfaz extends JFrame {
         //      maximizeButton.addMouseListener(new MouseAdapter() {
         //          @Override
         //          public void mouseEntered (MouseEvent evt){
-        //              maximizeButton.setBackground(new Color(55,55,55));
+        //              maximizeButton.setBackground(new Color(65, 65, 65));
         //          }
         //          public void mouseExited (MouseEvent evt){
-        //              maximizeButton.setBackground(Color.black);
+        //              maximizeButton.setBackground(43, 43, 43);
         //          }
         //      });
         exitButton.addActionListener(new ActionListener() {
@@ -1330,11 +1333,12 @@ public class Interfaz extends JFrame {
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                exitButton.setBackground(Color.red);
+                exitButton.setBackground(new Color(232, 17, 35));
             }
 
+            @Override
             public void mouseExited(MouseEvent evt) {
-                exitButton.setBackground(Color.black);
+                exitButton.setBackground(new Color(43, 43, 43));
             }
         });
     }
@@ -1382,35 +1386,34 @@ public class Interfaz extends JFrame {
     /**
      * Genera el texto que tendra la informacion del email.
      * @return una cadena con el asunto, fecha, hora y el email del destinatario
-     * @see {@code createSendEmailPanel()}
-     * @see {@code getDateTime()}
+     * @see createSendEmailPanel()
+     * @see getDateTime()
      */
     private String putEmailInfo() {
         String[] dateTime = getDateTime();
 
-        String emailInfo = String.format("""
-            <html>
-		<table width = 480>
-                    <tbody>
-			<tr>
-                            <td>Equipo de soporte</td>
-                            <td>&#9;</td>
-                            <td>&#9;</td>
-                            <td>%s</td>
-			</tr>
-			<tr>
-                            <td>Cambio de contrase\u00F1a</td>
-                            <td>&#9;</td>
-                            <td>&#9;</td>
-                            <td>%s</td>
-			</tr>
-			<tr>
-                            <td>%s</td>
-			</tr>
-                    </tbody>
-		</table>
-            </html>
-            """, dateTime[0], dateTime[1], currentEmail);
+        String emailInfo = String.format(
+            "<html>"
+		+ "<table width = 480>"
+                    + "<tbody>"
+			+ "<tr>"
+                            + "<td>Equipo de soporte</td>"
+                            + "<td>&#9;</td>"
+                            + "<td>&#9;</td>"
+                            + "<td>%s</td>"
+			+ "</tr>"
+			+ "<tr>"
+                            + "<td>Cambio de contrase\u00F1a</td>"
+                            + "<td>&#9;</td>"
+                            + "<td>&#9;</td>"
+                            + "<td>%s</td>"
+			+ "</tr>"
+			+ "<tr>"
+                            + "<td>%s</td>"
+			+ "</tr>"
+                    + "</tbody>"
+		+ "</table>"
+            + "</html>", dateTime[0], dateTime[1], currentEmail);
         return emailInfo;
     }
 }
