@@ -1,5 +1,10 @@
 package database;
 
+/**
+ * Clase usada para almacenar los registros de las bases de datos.
+ * @author Daniel
+ * @see UsuarioQuerys
+ */
 public class Usuario {
     
     private int idUsuario;
@@ -16,7 +21,8 @@ public class Usuario {
         this.idUsuario = idUsuario;
     }
 
-    public Usuario(String nombres, String apellidos, String email, String nickname, String password) {
+    public Usuario(String nombres, String apellidos, String email, 
+            String nickname, String password) {
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.email = email;
@@ -24,7 +30,8 @@ public class Usuario {
         this.password = password;
     }
 
-    public Usuario(int idUsuario, String nombres, String apellidos, String email, String nickname, String password) {
+    public Usuario(int idUsuario, String nombres, String apellidos, 
+            String email, String nickname, String password) {
         this.idUsuario = idUsuario;
         this.nombres = nombres;
         this.apellidos = apellidos;
@@ -83,6 +90,8 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" + "idUsuario=" + idUsuario + ", nombres=" + nombres + ", apellidos=" + apellidos + ", email=" + email + ", nickname=" + nickname + ", password=" + password + '}';
+        return "Usuario{" + "idUsuario=" + idUsuario + ", nombres=" + nombres 
+                + ", apellidos=" + apellidos + ", email=" + email 
+                + ", nickname=" + nickname + ", password=" + password + '}';
     }
 }

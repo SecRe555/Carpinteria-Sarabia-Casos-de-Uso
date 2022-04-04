@@ -1,9 +1,7 @@
 package GUI;
 
-/**
- * Importaciones
- */
-import backend.LoginScripts;
+/** Importaciones */
+import backend.Scripts;
 
 import java.awt.AWTException;
 import java.awt.Color;
@@ -43,37 +41,62 @@ import javax.swing.border.Border;
  * Clase que implementa la interfaz grafica del proyecto.
  * @author Daniel
  * @since 2.0
+ * @see JTabbedPaneCloseButton
+ * @see Scripts
  */
 public class Interfaz extends JFrame {
-    //Scripsts usados en el programa
-    LoginScripts script = new LoginScripts();
-    //Contenedor y pestañas
-    private JPanel container;
+    /** Scripts usados en el programa */
+    Scripts script = new Scripts();
+    //Pestañas y contenedor.
+    /**Panel que contendra todos los componentes*/
+    private JPanel container;    
+    /**Panel con pestañas usado*/
     private JTabbedPaneCloseButton tabbedPane;
+    /**Pestaña de login*/
     private JPanel loginTab;
+    /**Pestaña de email*/
     private JPanel emailTab;
-    private JPanel missPasswordTab;
-    //loginTab
+    /**Panel usado para crear la pestaña de contraseña olvidada*/
     private JPanel missPassword;
+    /**Pestaña de contraseña olvidada*/
+    private JPanel missPasswordTab;
+    /**Panel usado para colocar el mensaje de noEmailBody*/
     private JPanel noEmailBody;
+    /**Panel para colocar el cuerpo de los emails*/
     private JPanel emailBody;
+    /**Etiqueta para colocar la seleccion del email*/
     private JLabel emailLabel;
-
-    private String currentCodeKey;
-    private String codeKey = "";
+    /**Lista donde se guardaran los emails*/
     private List<JLabel> emails     = new ArrayList<>();
+    /**Lista donde se guardara el texto de los emails*/
     private List<JPanel> emailsText = new ArrayList<>();
-    private int beforeIndex;
+    /**Panel con barra para colocar emailsSectionPanel*/
     private JScrollPane emailsSectionScroll;
+    /**Panel que donde se colocaran los emails*/
     private JPanel emailsSectionPanel;
-
+    
+    //Variables usadas alrededor del codigo.
+    /**Codigo de confirmacion actual*/
+    private String currentCodeKey;
+    /**Codigo de confirmacion ingresado por el usuario*/
+    private String codeKey = "";
+    /**Indica el email anterior*/
+    private int beforeIndex;
+    /**Indica si el estado de la pantalla completa*/
     // private boolean fullscreen;
+    /**Indica el estado del texto de ejemplo del usuario*/
     private boolean removeUserExampleText     = true;
+    /**Indica el estado del texto de ejemplo de la contraseña*/
     private boolean removePasswordExampleText = true;
+    /**Indica el estado del texto de ejemplo del email*/
     private boolean removeEmailExampleText    = true;
+    /**Email actual con el que se trabaja*/
     private String currentEmail;
+    /**Indica si el email ingresado es valido*/
     private boolean validEmail;
+    /**Numero de pestañas ingresadas*/
     // private int tabCount;
+    
     //Colores y bordes
     private final Color brownCarpentryColor = new Color(163, 55, 20);
     private final Color redErrorColor       = new Color(244, 81, 108);
@@ -338,7 +361,7 @@ public class Interfaz extends JFrame {
                     passwordField.setForeground(Color.black);
                 } else {
                     viewPassword.setIcon(new ImageIcon(getClass().
-                            getResource("/files/closed eye.png")));
+                        getResource("/files/closed eye.png")));
                     passwordField.setEchoChar(passwordChar);
                     if (passwordField.getText().equals("")) {
                         passwordField.setText("example");
@@ -375,7 +398,7 @@ public class Interfaz extends JFrame {
                         password += passwordArray[i];
                     }
                     int isLogin;
-                    isLogin = script.validateUser(user, password);
+                    isLogin = script.validateLogin(user, password);
                     switch (isLogin) {
                         case 0:
                             message.setText("Login exitoso.");
@@ -545,7 +568,7 @@ public class Interfaz extends JFrame {
                 validEmail = script.validateEmail(emailTextField.getText());
                 if (validEmail) {
                     validEmail = false;
-                    currentEmail = emailTextField.getText();
+                    currentEmail = script.returnEmail();
                     if (emails.isEmpty()) {
                         emailLabel = new JLabel(putEmailInfo());
                         emailLabel.setBounds(0, 0, 500, 100);

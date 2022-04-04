@@ -1,21 +1,32 @@
 package database;
 
+/** Importaciones */
 import static database.Conexion.*;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Clase encargada de ejecutar las consultas.
+ * @author Daniel
+ */
 public class UsuarioQuerys {
 
     private static final String SQL_SELECT = "SELECT id_usuario, nombres, "
             + "apellidos, email, nickname, password_usuario FROM usuarios";
     private static final String SQL_INSERT = "INSERT INTO usuarios(nombres, "
-            + "apellidos, email, nickname, password_usuario) VALUES(?, ?, ?, ?, ?)";
+            + "apellidos, email, nickname, password_usuario) VALUES"
+            + "(?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE usuarios SET nombres = ?, "
-            + "apellidos = ?, email = ?, nickname = ?, password_usuario = ? WHERE id_usuario = ?";
-    private static final String UPDATE_PASSWORD = "UPDATE usuarios SET password_usuario = ?"
-    		+ "WHERE id_usuario = ?";
+            + "apellidos = ?, email = ?, nickname = ?, password_usuario = ?"
+            + "WHERE id_usuario = ?";
+    private static final String UPDATE_PASSWORD = "UPDATE usuarios SET "
+            + "password_usuario = ? WHERE id_usuario = ?";
     
+    /**
+     * Ejecuta una sentencia de SELECT.
+     * @return los registros recuperados
+     */
     public List<Usuario> seleccionar() {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -35,7 +46,8 @@ public class UsuarioQuerys {
                 String nickname = rs.getString("nickname");
                 String password = rs.getString("password_usuario");
 
-                usuario = new Usuario(idUsuario, nombre, apellido, email, nickname, password);
+                usuario = new Usuario(idUsuario, nombre, apellido, email,
+                        nickname, password);
 
                 usuarios.add(usuario);
             }
@@ -54,6 +66,10 @@ public class UsuarioQuerys {
         return usuarios;
     }
     
+    /**
+     * Ejecuta una sentencia de INSERT
+     * @param usuario el registro a insertar
+     */
     public int insertar(Usuario usuario){
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -81,6 +97,10 @@ public class UsuarioQuerys {
         return registros;
     }
     
+    /**
+     * Ejecuta una sentencia de UPDATE.
+     * @param usuario los datos del registro a actualizar
+     */
     public int actualizar(Usuario usuario){
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -109,6 +129,10 @@ public class UsuarioQuerys {
         return registros;
     }
     
+    /**
+     * Ejecuta una sentencia de UPDATE pero solo del campo password_usuario
+     * @param usuario el registro a actualizar
+     */
     public int actualizarPassword(Usuario usuario) {
     	Connection conn = null;
         PreparedStatement stmt = null;
