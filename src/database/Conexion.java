@@ -22,22 +22,21 @@ import java.util.Properties;
  */
 public class Conexion {
     
-    private static Properties properties = null;
-    private static final String JDBC_URL       = "url";
-    private static final String USER           = "user";
-    private static final String PASSWORD       = "password";
+    private Properties properties       = null;
+    private final String JDBC_URL       = "url";
+    private final String USER           = "user";
+    private final String PASSWORD       = "password";
     
     /**
      * Establece la conexion con la base de datos.
      * @return La conexion establecida.
      * @throws SQLException 
      */
-    public static Connection getConnection() throws SQLException{
+    public Connection getConnection() throws SQLException{
         try {
             properties = new Properties();
-            InputStream file = new FileInputStream("C:\\Users\\Admin\\Desktop\\"
-                    + "GitHub_Construccion\\casos_de_uso\\src\\database\\"
-                    + "dbConfig.properties");
+            InputStream file = getClass().getResourceAsStream(
+                    "/database/dbConfig.properties");
             properties.load(file);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.out);
@@ -55,7 +54,7 @@ public class Conexion {
      * @param rs el ResultSet a cerrar
      * @throws SQLException 
      */
-    public static void close(ResultSet rs) throws SQLException{
+    public void close(ResultSet rs) throws SQLException{
         rs.close();
     }
     
@@ -64,7 +63,7 @@ public class Conexion {
      * @param smtm el Statement a cerrar
      * @throws SQLException 
      */
-    public static void close(Statement smtm) throws SQLException{
+    public void close(Statement smtm) throws SQLException{
         smtm.close();
     }
     
@@ -73,7 +72,7 @@ public class Conexion {
      * @param smtm el PreparedStatement a cerrar
      * @throws SQLException 
      */
-    public static void close(PreparedStatement smtm) throws SQLException{
+    public void close(PreparedStatement smtm) throws SQLException{
         smtm.close();
     }
     
@@ -82,7 +81,7 @@ public class Conexion {
      * @param conn la conexion a cerrar
      * @throws SQLException 
      */
-    public static void close(Connection conn) throws SQLException{
+    public void close(Connection conn) throws SQLException{
         conn.close();
     }
 }
